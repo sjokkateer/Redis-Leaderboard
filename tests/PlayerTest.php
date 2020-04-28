@@ -21,7 +21,7 @@ class PlayerTest extends TestCase
     public function test_constructor_playerConstructedWithRandomIntegerValueLargerThan1000_expectedRatingToEqualRandomlyGeneratedValue()
     {
         // Arrange
-        $randomPerformanceRating = $this->getRandomValidPlayerRating();
+        $randomPerformanceRating = Player::getRandomValidPlayerRating();
         $player = new Player($randomPerformanceRating);
 
         // Act
@@ -30,17 +30,6 @@ class PlayerTest extends TestCase
 
         // Assert
         $this->assertEquals($expectedRating, $actualRating, "player rating should be equal to the random int generated: $expectedRating but was $actualRating");
-    }
-
-    /**
-     * Helper method that generates a random rating
-     * between the min rating and max int value.
-     *
-     * @return integer
-     */
-    private function getRandomValidPlayerRating(): int
-    {
-        return rand(Player::MIN_RATING, PHP_INT_MAX);
     }
 
     public function test_constructor_playerConstructedWithRandomIntegerValueLessThanPlayerMinRating_expectedRatingToEqualMinRating()
@@ -87,7 +76,7 @@ class PlayerTest extends TestCase
     private function constructPlayerRandomly(): Player
     {
         if (rand(0, 1)) {
-            return new Player($this->getRandomValidPlayerRating());
+            return Player::generateRandomPlayer();
         }
 
         return new Player();
