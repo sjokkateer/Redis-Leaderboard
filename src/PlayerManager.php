@@ -93,12 +93,13 @@ class PlayerManager
         if (empty($players)) {
             $this->generateRandomPlayers();
         } else {
-            $this->setLastPlayerId($players);
+            Player::setId($this->getLastPlayerId());
         }
     }
 
-    private function setLastPlayerId(array $players): void
+    public function getLastPlayerId(): int
     {
+        $players = $this->redis->hgetall(self::SET_OF_PLAYERS);
         $lastId = -1;
 
         foreach ($players as $id => $rating) {
@@ -107,7 +108,7 @@ class PlayerManager
             }
         }
 
-        Player::setId($lastId);
+        return $lastId;
     }
 
     private function generateRandomPlayers(): void

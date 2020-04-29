@@ -42,7 +42,9 @@ class Player
 
     public static function setId(int $id): void
     {
-        self::$id = $id;
+        if ($id >= 1) {
+            self::$id = $id;
+        }
     }
 
     public function __toString(): string

@@ -20,6 +20,7 @@ class PlayerManagerTest extends TestCase
     protected function tearDown(): void
     {
         $this->playerManager->clearCache();
+        Player::setId(1);
     }
 
     // On construction we should have a connection to redis.
@@ -60,7 +61,7 @@ class PlayerManagerTest extends TestCase
         $this->assertEquals($expectedPlayerPerformanceRating, $actualPlayerPerformanceRating, "player should be in cache with default performance rating ($expectedPlayerPerformanceRating), but got: $actualPlayerPerformanceRating");
     }
 
-    public function test_updatePlayerPerformanceRatings_randomPlayerOfTwoWins_playerWhoWonGotIncreaseInRatingAndPlayerWhoLostDecreaseByEqualAmounts()
+    public function test_updatePlayerPerformanceRatings_randomPlayerOfTwoWins_playerWhoWonGotIncreaseInRatingAndPlayerWhoLostDecreaseByEqualAmounts(): void
     {
         // Arrange
         $playerOne = new Player();
@@ -85,7 +86,7 @@ class PlayerManagerTest extends TestCase
         $this->assertEquals(abs($playerOnePerformanceRatingBeforeGame - $playerOneRatingAfterSimulation), abs($playerTwoPerformanceRatingBeforeGame - $playerTwoRatingAfterSimulation), 'There can be no difference in the total change of rating!');
     }
 
-    public function test_initializePlayerManager_noPlayersInCache_applicationInitializedWithTenRandomPlayers()
+    public function test_initializePlayerManager_noPlayersInCache_applicationInitializedWithTenRandomPlayers(): void
     {
         // Arrange
         $this->playerManager->initializeApp();
@@ -100,14 +101,11 @@ class PlayerManagerTest extends TestCase
         $this->assertEquals($expectedNumberOfPlayersInCollection, $actualNumberOfPlayersInCollections, "number of expected players $expectedNumberOfPlayersInCollection did not match actual $actualNumberOfPlayersInCollections");
     }
 
-    public function test_initializePlayerManager_somePlayersAlreadyInCache_expectedExistingPlayerObjectsReturned()
+    public function test_initializePlayerManager_somePlayersAlreadyInCache_expectedExistingPlayerObjectsReturned(): void
     {
         // Arrange
         $numberOfPlayersToAdd = 2;
-
-        for ($i = 0; $i < $numberOfPlayersToAdd; $i++) {
-            $this->playerManager->addPlayer(Player::generateRandomPlayer());
-        }
+        $this->addNumberOfPlayers($numberOfPlayersToAdd);
 
         $this->playerManager->initializeApp();
 
@@ -119,5 +117,26 @@ class PlayerManagerTest extends TestCase
 
         // Assert
         $this->assertEquals($expectedNumberOfPlayersInCollection, $actualNumberOfPlayersInCollections, "number of expected players $expectedNumberOfPlayersInCollection did not match actual $actualNumberOfPlayersInCollections");
+    }
+
+    public function test_getNumberOfPlayers_afterAddingARandomNumberOfPlayers_expectedThatRandomNumberToBeReturned(): void
+    {
+        // Arrange
+        $numberOfPlayersToAdd = rand(1, 200);
+        $this->addNumberOfPlayers($numberOfPlayersToAdd);
+
+        // Act
+        $expectedNumberOfPlayers = $numberOfPlayersToAdd;
+        $actualNumberOfPlayers = $this->playerManager->getLastPlayerId();
+
+        // Assert
+        $this->assertEquals($expectedNumberOfPlayers, $actualNumberOfPlayers, "the number of players added should equal $expectedNumberOfPlayers but was $actualNumberOfPlayers");
+    }
+
+    private function addNumberOfPlayers(int $n): void
+    {
+        for ($i = 0; $i < $n; $i++) {
+            $this->playerManager->addPlayer(Player::generateRandomPlayer());
+        }
     }
 }
