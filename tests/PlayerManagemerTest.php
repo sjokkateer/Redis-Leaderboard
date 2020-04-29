@@ -4,7 +4,7 @@ use App\Player;
 use App\PlayerManager;
 use PHPUnit\Framework\TestCase;
 
-class PlayerManagementTest extends TestCase
+class PlayerManagerTest extends TestCase
 {
     private const PLAYER_ONE = 0;
     private const PLAYER_TWO = 1;

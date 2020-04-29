@@ -34,16 +34,11 @@ class PlayerManager
 
     public function getPlayerPerformanceRating(Player $player)
     {
-        return $this->redis->get($player->getId());
+        return $this->redis->hget(self::SET_OF_PLAYERS, $player->getId());
     }
 
     public function addPlayer(Player $player): void
     {
-        // This should be refactored to adding the player id
-        // to the cache's 
-        array_push($this->players, $player);
-        $this->addPerformanceRatingToCache($player);
-
         $this->redis->hset(self::SET_OF_PLAYERS, $player->getId(), $player->getPerformanceRating());
     }
 
@@ -57,8 +52,9 @@ class PlayerManager
         $playerOneRatingChange = $playerOneWon ? $potentialRatingChange : -1 * $potentialRatingChange;
         $playerTwoRatingChange = -1 * $playerOneRatingChange;
 
-        $this->updateRatingForPlayer($playerOne, (int) $playerOneRatingChange);
-        $this->updateRatingForPlayer($playerTwo, (int) $playerTwoRatingChange);
+        // On a set there is no decrease but increasing a positive number with a negative number still works.
+        $this->redis->hincrby(self::SET_OF_PLAYERS, $playerOne->getId(), (int) $playerOneRatingChange);
+        $this->redis->hincrby(self::SET_OF_PLAYERS, $playerTwo->getId(), (int) $playerTwoRatingChange);
 
         return [
             $this->getPlayerPerformanceRating($playerOne),
@@ -86,22 +82,6 @@ class PlayerManager
     private function determineIfPlayerWon(float $probabilityOfWinning): bool
     {
         return lcg_value() <= $probabilityOfWinning;
-    }
-
-    private function updateRatingForPlayer(Player $player, int $ratingChange): void
-    {
-        $absoluteRatingChange = abs($ratingChange);
-
-        if ($ratingChange < 0) {
-            $this->redis->decrby($player->getId(), $absoluteRatingChange);
-        } else {
-            $this->redis->incrby($player->getId(), $absoluteRatingChange);
-        }
-    }
-
-    private function addPerformanceRatingToCache(Player $player): void
-    {
-        $this->redis->set($player->getId(), $player->getPerformanceRating());
     }
 
     public function initializeApp(): void
