@@ -40,6 +40,11 @@ class Player
         return $this->playerId;
     }
 
+    public static function setId(int $id): void
+    {
+        self::$id = $id;
+    }
+
     public function __toString(): string
     {
         return "Player(id={$this->playerId}, performance_rating={$this->performanceRating})";

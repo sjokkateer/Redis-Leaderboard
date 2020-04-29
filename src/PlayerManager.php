@@ -92,10 +92,22 @@ class PlayerManager
         // $players can be empty, then we initialize the app with some random players.
         if (empty($players)) {
             $this->generateRandomPlayers();
+        } else {
+            $this->setLastPlayerId($players);
+        }
+    }
+
+    private function setLastPlayerId(array $players): void
+    {
+        $lastId = -1;
+
+        foreach ($players as $id => $rating) {
+            if ($lastId < $id) {
+                $lastId = $id;
+            }
         }
 
-        // Else we should set the maximum player id in the cache to the player static id field to
-        // continue create new players formally. (for experiment/demonstration not too relevant)
+        Player::setId($lastId);
     }
 
     private function generateRandomPlayers(): void

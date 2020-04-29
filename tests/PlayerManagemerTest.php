@@ -99,4 +99,25 @@ class PlayerManagerTest extends TestCase
         // Assert
         $this->assertEquals($expectedNumberOfPlayersInCollection, $actualNumberOfPlayersInCollections, "number of expected players $expectedNumberOfPlayersInCollection did not match actual $actualNumberOfPlayersInCollections");
     }
+
+    public function test_initializePlayerManager_somePlayersAlreadyInCache_expectedExistingPlayerObjectsReturned()
+    {
+        // Arrange
+        $numberOfPlayersToAdd = 2;
+
+        for ($i = 0; $i < $numberOfPlayersToAdd; $i++) {
+            $this->playerManager->addPlayer(Player::generateRandomPlayer());
+        }
+
+        $this->playerManager->initializeApp();
+
+        // Act
+        $playerCollection = $this->playerManager->getAllPlayers();
+
+        $expectedNumberOfPlayersInCollection = $numberOfPlayersToAdd;
+        $actualNumberOfPlayersInCollections = count($playerCollection);
+
+        // Assert
+        $this->assertEquals($expectedNumberOfPlayersInCollection, $actualNumberOfPlayersInCollections, "number of expected players $expectedNumberOfPlayersInCollection did not match actual $actualNumberOfPlayersInCollections");
+    }
 }
