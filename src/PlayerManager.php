@@ -18,13 +18,7 @@ class PlayerManager
 
     public function __construct()
     {
-        try {
-            $this->redis = new Client();
-        } catch (\Exception $e) {
-            echo "Failed to connect to the redis server" . PHP_EOL;
-            echo $e->getMessage();
-        }
-
+        $this->redis = new Client();
         $this->players = [];
     }
 
@@ -38,7 +32,7 @@ class PlayerManager
         return $this->players;
     }
 
-    public function getPlayerPerformanceRating(Player $player)
+    public function getPlayerPerformanceRating(Player $player): ?string
     {
         return $this->redis->hget(self::SET_OF_PLAYERS, $player->getId());
     }
