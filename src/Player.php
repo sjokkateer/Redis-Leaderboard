@@ -9,6 +9,7 @@ class Player
     private static int $id = 1;
     public const MIN_RATING = 1000;
     public const DEFAULT_RATING = 1200;
+    public const MAX_RATING = 3000;
 
     private int $playerId;
     private int $performanceRating;
@@ -65,7 +66,7 @@ class Player
      */
     public static function getRandomValidPlayerRating(): int
     {
-        return rand(self::MIN_RATING, PHP_INT_MAX);
+        return rand(self::MIN_RATING, self::MAX_RATING);
     }
 
     public static function create(int $id, int $playerPerformanceRating)
