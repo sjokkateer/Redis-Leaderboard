@@ -16,7 +16,6 @@ class LeaderBoardController
     public function index(): string
     {
         $players = $this->playerManager->getAllPlayers();
-        // Sort players by rating descending.
         usort($players, fn($p1, $p2) => -1 * ($p1->getPerformanceRating() - $p2->getPerformanceRating()));
 
         $output = $this->loadTemplate('players', ['players' => $players]);
@@ -25,7 +24,6 @@ class LeaderBoardController
 
     public function simulateGame(): string
     {
-        // First get two random players which should be a method on the player manager class.
         $playerOne = $this->playerManager->getRandomPlayer();
 
         do{
@@ -34,7 +32,9 @@ class LeaderBoardController
 
         $this->playerManager->simulateGame($playerOne, $playerTwo);
 
-        return $this->index();
+        // Redirect to index page for display
+        header('Location: ' . $_SERVER['PHP_SELF']);
+        die;
     }
 
     private function loadTemplate(string $template, array $data = []): string

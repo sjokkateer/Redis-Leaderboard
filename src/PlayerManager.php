@@ -52,15 +52,21 @@ class PlayerManager
     public function simulateGame(Player $playerOne, Player $playerTwo): array
     {
         $playerOneProbabilityOfWinning = $this->calculateProbabilityOfWinning($playerOne, $playerTwo);
-        $potentialRatingChange = self::K * (1 - $playerOneProbabilityOfWinning);
+        $potentialRatingChangePlayerOne = self::K * (1 - $playerOneProbabilityOfWinning);
+
+        // Calculate the potential point change for player two as well.
+        $playerTwoProbabilityOfWinning = $this->calculateProbabilityOfWinning($playerTwo, $playerOne);
+        $potentialRatingChangePlayerTwo = self::K * (1 - $playerTwoProbabilityOfWinning);
 
         $playerOneWon = $this->determineIfPlayerWon($playerOneProbabilityOfWinning);
-        $playerOneRatingChange = $playerOneWon ? $potentialRatingChange : -1 * $potentialRatingChange;
+        // In case player one lost, it should lose the points that player two could win.
+        $playerOneRatingChange = $playerOneWon ? $potentialRatingChangePlayerOne : -1 * $potentialRatingChangePlayerTwo;
+        // Player two should increment by the opposite.
         $playerTwoRatingChange = -1 * $playerOneRatingChange;
 
         // On a set there is no decrease but increasing a positive number with a negative number still works.
-        $this->redis->hincrby(self::SET_OF_PLAYERS, $playerOne->getId(), (int) $playerOneRatingChange);
-        $this->redis->hincrby(self::SET_OF_PLAYERS, $playerTwo->getId(), (int) $playerTwoRatingChange);
+        $this->redis->hincrby(self::SET_OF_PLAYERS, $playerOne->getId(), (int) round($playerOneRatingChange));
+        $this->redis->hincrby(self::SET_OF_PLAYERS, $playerTwo->getId(), (int) round($playerTwoRatingChange));
 
         return [
             $this->getPlayerPerformanceRating($playerOne),
