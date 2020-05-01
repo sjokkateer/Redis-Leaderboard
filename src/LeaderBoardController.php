@@ -23,6 +23,20 @@ class LeaderBoardController
         return $this->loadTemplate('index', ['output' => $output]);
     }
 
+    public function simulateGame(): string
+    {
+        // First get two random players which should be a method on the player manager class.
+        $playerOne = $this->playerManager->getRandomPlayer();
+
+        do{
+            $playerTwo = $this->playerManager->getRandomPlayer();
+        } while ($playerTwo->getId() == $playerOne->getId());
+
+        $this->playerManager->simulateGame($playerOne, $playerTwo);
+
+        return $this->index();
+    }
+
     private function loadTemplate(string $template, array $data = []): string
     {
         extract($data);

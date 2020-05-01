@@ -136,4 +136,10 @@ class PlayerManager
 
         return $playerObjectCollection;
     }
+
+    public function getRandomPlayer(): ?Player
+    {
+        $players = $this->getAllPlayers();
+        return count($players) > 0 ? $players[rand(0, count($players) - 1)] : null;
+    }
 }

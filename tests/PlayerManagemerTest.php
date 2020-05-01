@@ -139,4 +139,28 @@ class PlayerManagerTest extends TestCase
             $this->playerManager->addPlayer(Player::generateRandomPlayer());
         }
     }
+
+    public function test_getRandomPlayer_expectedPlayerReturnedThatIsInCollectionOfPlayers()
+    {
+        // Arrange
+        $this->playerManager->initializeApp();
+        $players = $this->playerManager->getAllPlayers();
+        $randomPlayer = $this->playerManager->getRandomPlayer();
+        $actualPlayer = null;
+
+        // Act
+        foreach ($players as $player) {
+            if ($player->getId() == $randomPlayer->getId()) {
+                $actualPlayer = $player;
+                break;
+            }
+        }
+
+        // Assert
+        if (count($players) > 0) {
+            $this->assertNotNull($actualPlayer. "the random player should be present in the collection of players!");
+        } else {
+            $this->assertNull($actualPlayer, "there should be no random player available as the collection of players was empty!");
+        }
+    }
 }

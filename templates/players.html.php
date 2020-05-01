@@ -1,4 +1,4 @@
-<table style="width: 25%; text-align: center">
+<table style="text-align: center">
     <thead>
         <tr>
             <th style="width: 33%">Rank</th>
