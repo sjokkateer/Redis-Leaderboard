@@ -9,7 +9,8 @@
 </head>
 <body style="width: 25%; text-align: center;">
     <form method="POST">
-        <input type="submit" value="Simulate Game" style="width: 100%;">
+        <input type="submit" value="Clear Cache" name="clear" style="width: 100%;">
+        <input type="submit" value="Simulate Game" name="simulate" style="width: 100%;">
     </form>
     <h2>
        Player Leader Board

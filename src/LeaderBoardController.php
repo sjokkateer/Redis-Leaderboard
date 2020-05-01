@@ -22,7 +22,7 @@ class LeaderBoardController
         return $this->loadTemplate('index', ['output' => $output]);
     }
 
-    public function simulateGame(): string
+    public function simulateGame(): void
     {
         $playerOne = $this->playerManager->getRandomPlayer();
 
@@ -31,10 +31,35 @@ class LeaderBoardController
         } while ($playerTwo->getId() == $playerOne->getId());
 
         $this->playerManager->simulateGame($playerOne, $playerTwo);
+        $this->redirectHome();
+    }
 
+    private function redirectHome(): void
+    {
         // Redirect to index page for display
         header('Location: ' . $_SERVER['PHP_SELF']);
         die;
+    }
+
+    public function clearCache(): void
+    {
+        $this->playerManager->clearCache();
+        $this->redirectHome();
+    }
+
+    public function determineAction(string $method): void
+    {
+        switch($method) {
+            case 'clear':
+                $this->clearCache();
+                break;
+            case 'simulate':
+                $this->simulateGame();
+                break;
+            default:
+                $this->index();
+                break;
+        }
     }
 
     private function loadTemplate(string $template, array $data = []): string

@@ -53,7 +53,7 @@ class Player
         return "Player(id={$this->playerId}, performance_rating={$this->performanceRating})";
     }
 
-    public static function generateRandomPlayer()
+    public static function generateRandomPlayer(): Player
     {
         return new Player(self::getRandomValidPlayerRating());
     }
@@ -69,7 +69,7 @@ class Player
         return rand(self::MIN_RATING, self::MAX_RATING);
     }
 
-    public static function create(int $id, int $playerPerformanceRating)
+    public static function create(int $id, int $playerPerformanceRating): Player
     {
         return new Player($playerPerformanceRating, $id);
     }
